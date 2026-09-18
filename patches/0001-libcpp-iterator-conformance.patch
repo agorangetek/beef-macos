@@ -1,0 +1,90 @@
+diff --git a/BeefySysLib/util/Array.h b/BeefySysLib/util/Array.h
+index 06eb13e..6d8c1e8 100644
+--- a/BeefySysLib/util/Array.h
++++ b/BeefySysLib/util/Array.h
+@@ -144,6 +144,12 @@ public:
+ 			return mPtr;
+ 		}
+ 
++		// Required by modern libc++ std::sort (random-access iterator conformance)
++		T& operator[](intptr offset) const
++		{
++			return mPtr[offset];
++		}
++
+ 		bool operator<(const iterator& val2) const
+ 		{
+ 			return mPtr < val2.mPtr;
+@@ -228,6 +234,12 @@ public:
+ 			return mPtr;
+ 		}
+ 
++		// Required by modern libc++ std::sort (random-access iterator conformance)
++		const T& operator[](intptr offset) const
++		{
++			return mPtr[offset];
++		}
++
+ 		bool operator<(const const_iterator& val2) const
+ 		{
+ 			return mPtr < val2.mPtr;
+diff --git a/BeefySysLib/util/SizedArray.h b/BeefySysLib/util/SizedArray.h
+index d5dbfec..bd629db 100644
+--- a/BeefySysLib/util/SizedArray.h
++++ b/BeefySysLib/util/SizedArray.h
+@@ -115,6 +115,12 @@ public:
+ 			return mPtr;
+ 		}
+ 
++		// Required by modern libc++ std::sort (random-access iterator conformance)
++		T& operator[](intptr offset) const
++		{
++			return mPtr[offset];
++		}
++
+ 		bool operator<(const iterator& val2)
+ 		{
+ 			return mPtr < val2.mPtr;
+@@ -194,6 +200,12 @@ public:
+ 			return mPtr;
+ 		}
+ 
++		// Required by modern libc++ std::sort (random-access iterator conformance)
++		const T& operator[](intptr offset) const
++		{
++			return mPtr[offset];
++		}
++
+ 		bool operator<(const const_iterator& val2)
+ 		{
+ 			return mPtr < val2.mPtr;
+diff --git a/BeefySysLib/util/String.h b/BeefySysLib/util/String.h
+index d594530..dee4e26 100644
+--- a/BeefySysLib/util/String.h
++++ b/BeefySysLib/util/String.h
+@@ -95,6 +95,12 @@ public:
+ 			return mPtr;
+ 		}
+ 
++		// Required by modern libc++ std::sort (random-access iterator conformance)
++		char& operator[](intptr offset) const
++		{
++			return mPtr[offset];
++		}
++
+ 		bool operator<(const iterator& val2)
+ 		{
+ 			return mPtr < val2.mPtr;
+@@ -164,6 +170,12 @@ public:
+ 			return mPtr;
+ 		}
+ 
++		// Required by modern libc++ std::sort (random-access iterator conformance)
++		const char& operator[](intptr offset) const
++		{
++			return mPtr[offset];
++		}
++
+ 		bool operator<(const const_iterator& val2)
+ 		{
+ 			return mPtr < val2.mPtr;

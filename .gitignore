@@ -1,0 +1,8 @@
+# upstream checkout produced by setup-beef-macos.sh
+/Beef/
+
+# build output from the verification project
+tests/socket_ipv6/build/
+
+# macOS
+.DS_Store
