@@ -45,6 +45,16 @@ The docs are right about scope, though: *"the CLI tools such as BeefBuild are su
 platforms, but the IDE is currently only available for Windows."* That matches what this repository
 covers.
 
+## Where things live
+
+Throughout, `<Beef>` means the checkout this produces: `setup-beef-macos.sh` puts it in `Beef/` next to
+the script (`BEEF_DIR=` overrides that), and its build system writes every toolchain binary and library
+into `<Beef>/IDE/dist` — that is where `BeefBuild` ends up.
+
+> **A macOS build contains no IDE.** The `IDE/` in that path is just the repository's layout: it is the
+> dist directory of the repo's `IDE` project, and `BeefBuild` shares it. Beef also resolves helper tools
+> such as `llvm-ar` relative to it, which is why library builds need `<Beef>/IDE/dist/llvm/bin/`.
+
 ## Requirements
 
 - **Xcode** (full or Command Line Tools). *Only full Xcode is known-good* — see
@@ -250,7 +260,8 @@ macOS now links through the `-shared` path, with `-Wl,-install_name,@rpath/<name
 relocatable (otherwise the install name defaults to the absolute build path and gets baked into
 everything that links it).
 
-Static libraries need the LLVM tools at `<Beef>/IDE/dist/llvm/bin/`, which `setup-beef-macos.sh` creates.
+Static libraries need the LLVM tools at `<Beef>/IDE/dist/llvm/bin/` — the toolchain's dist directory
+again, no IDE involved — which `setup-beef-macos.sh` creates.
 A macOS source build ships no `llvm/` directory, so without it the archive step fails with
 `'llvm/bin/llvm-ar' ... exited with code 255`.
 

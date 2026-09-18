@@ -30,8 +30,8 @@ requires. Without this the C++ compiler does not compile on a current Xcode. Not
 
 **`0003` — dynamic libraries.** `BuildKind = "DynamicLib"` was routed to the static archiver, producing
 an `ar` archive named `.dylib` that nothing could link against. macOS now links through the `-shared`
-path with an `@rpath` install name. Static libraries work too, once the LLVM tools are linked into
-`IDE/dist/llvm/bin/` (the setup script does this).
+path with an `@rpath` install name. Static libraries work too, once the LLVM tools are linked into the
+toolchain's dist directory, `<Beef>/IDE/dist/llvm/bin/` (the setup script does this).
 
 **`0002` — macOS sockets.** Four bugs in `corlib`'s `Socket`, all from treating macOS as Linux (or
 Windows):
@@ -59,6 +59,9 @@ Intel Macs should work (the patches are architecture-independent) but are untest
 
 This covers the **command-line toolchain**. Upstream's GUI IDE remains Windows-only and needs
 substantially more porting work; see the "Not included" section of `BUILDING-macOS.md`.
+
+The tools land in a directory called `IDE/dist` — that is the repository's layout, not a sign that an IDE
+is built. A macOS build produces the CLI tools only.
 
 Editor integration is published separately:
 
