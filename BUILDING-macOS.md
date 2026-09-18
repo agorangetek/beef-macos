@@ -48,12 +48,20 @@ covers.
 ## Where things live
 
 Throughout, `<Beef>` means the checkout this produces: `setup-beef-macos.sh` puts it in `Beef/` next to
-the script (`BEEF_DIR=` overrides that), and its build system writes every toolchain binary and library
-into `<Beef>/IDE/dist` — that is where `BeefBuild` ends up.
+the script (`BEEF_DIR=` overrides that). Its build system writes every toolchain binary and library into
+`<Beef>/IDE/dist`, so in the commands below:
 
-> **A macOS build contains no IDE.** The `IDE/` in that path is just the repository's layout: it is the
-> dist directory of the repo's `IDE` project, and `BeefBuild` shares it. Beef also resolves helper tools
-> such as `llvm-ar` relative to it, which is why library builds need `<Beef>/IDE/dist/llvm/bin/`.
+```bash
+BEEF_DIST=<Beef>/IDE/dist     # the toolchain's bin/lib directory
+```
+
+That one directory holds `BeefBuild`, the static libraries (`libBeefRT.a`, `libIDEHelper.a`,
+`libBeefySysLib.a`, …), `libhunspell.dylib`, and — for library builds — `llvm/bin/`.
+
+> **A macOS build contains no IDE.** `IDE/` is only the repository's layout: it is the dist directory of
+> the repo's `IDE` project, and `BeefBuild` shares it. If `IDE/dist` reads oddly, read it as "the
+> toolchain's binary and library directory" — that is all it is. Beef also resolves helper tools such as
+> `llvm-ar` relative to it, which is why library builds need `<Beef>/IDE/dist/llvm/bin/`.
 
 ## Requirements
 
