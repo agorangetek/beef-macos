@@ -54,6 +54,12 @@ Intel Macs should work (the patches are architecture-independent) but are untest
 This covers the **command-line toolchain**. Upstream's GUI IDE remains Windows-only and needs
 substantially more porting work; see the "Not included" section of `BUILDING-macOS.md`.
 
+Editor integration is published separately:
+
+> **[beef-lsp-macos](https://github.com/agorangetek/beef-lsp-macos)** — a working Beef language server (completion, hover, go-to-definition, find
+> references, rename, document symbols, signature help, semantic tokens, formatting, diagnostics) plus a
+> VS Code extension and a ready-to-install `.vsix`. It builds on the toolchain this repository produces.
+
 ## License
 
 Beef is Copyright © 2019 BeefyTech LLC and MIT licensed. `LICENSE.TXT` and `LICENSES.TXT` are upstream's

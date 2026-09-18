@@ -252,8 +252,10 @@ file to check first, since the platform branches there are actively evolving. An
   work than the CLI toolchain: the darwin platform app is stubbed to a headless backend, corlib has no
   macOS dialog implementation, and `IDEHelper`'s LLDB debugger support is fenced off with
   `if(UNIX AND NOT APPLE)`. It also currently trips a compiler crash (`exit 139`) partway through.
-- **Editor integration.** A language server exists in a community fork
-  (`MineGame159/Beef`, branch `lsp`); it is separate from this repository.
+- **Editor integration.** Published separately as
+  **[beef-lsp-macos](https://github.com/agorangetek/beef-lsp-macos)** — a macOS build of [MineGame159](https://github.com/MineGame159/Beef)'s
+  community language server (branch `lsp`) plus a VS Code extension. It depends on the toolchain this
+  repository builds, so build this first.
 - **Cross-targets** (iOS/Android/wasm) are untested here.
 
 ## Credits and license
