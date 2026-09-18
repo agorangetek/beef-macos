@@ -19,6 +19,7 @@ bash setup-beef-macos.sh
 | `setup-beef-macos.sh` | Fetches upstream at a pinned revision, patches, builds, verifies |
 | `patches/0001-libcpp-iterator-conformance.patch` | Makes Beef's C++ compile with current libc++ |
 | `patches/0002-corlib-macos-sockets.patch` | Fixes four socket bugs on BSD/macOS |
+| `patches/0003-macos-dynamic-library.patch` | Makes `BuildKind = "DynamicLib"` produce a real `.dylib` |
 | `tests/socket_ipv6/` | Beef project proving the socket fixes (IPv6 listen + connect round-trip) |
 
 ## The two patches
@@ -26,6 +27,11 @@ bash setup-beef-macos.sh
 **`0001` — libc++ iterator conformance.** Beef's `ArrayBase`/`SizedArrayBase` iterators claim
 `std::random_access_iterator_tag` but never implemented `operator[]`, which modern libc++'s `std::sort`
 requires. Without this the C++ compiler does not compile on a current Xcode. Not macOS-specific.
+
+**`0003` — dynamic libraries.** `BuildKind = "DynamicLib"` was routed to the static archiver, producing
+an `ar` archive named `.dylib` that nothing could link against. macOS now links through the `-shared`
+path with an `@rpath` install name. Static libraries work too, once the LLVM tools are linked into
+`IDE/dist/llvm/bin/` (the setup script does this).
 
 **`0002` — macOS sockets.** Four bugs in `corlib`'s `Socket`, all from treating macOS as Linux (or
 Windows):

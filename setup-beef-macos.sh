@@ -91,6 +91,17 @@ ln -sf "$LLVM_PREFIX/bin/llvm-config" "$SHIM_DIR/llvm-config"
 BEAT="$BEEF_DIR/IDE/dist/BeefBuild"
 [ -x "$BEAT" ] || fail "the build finished but $BEAT was not produced"
 
+# Beef's library/archive step shells out to <installDir>/llvm/bin/llvm-ar, and a macOS
+# source build ships no llvm/ directory, so StaticLib builds fail with "exited with code 255".
+# Link the Homebrew LLVM tools into place.
+say "linking LLVM tools into IDE/dist/llvm/bin (needed for library builds)"
+mkdir -p "$BEEF_DIR/IDE/dist/llvm/bin"
+for tool in llvm-ar llvm-ranlib llvm-nm llvm-objcopy llvm-strip llvm-readobj; do
+	if [ -x "$LLVM_PREFIX/bin/$tool" ]; then
+		ln -sf "$LLVM_PREFIX/bin/$tool" "$BEEF_DIR/IDE/dist/llvm/bin/$tool"
+	fi
+done
+
 # ---------------------------------------------------------------------- verify
 say "verifying the toolchain with tests/socket_ipv6"
 cd "$BEEF_DIR/IDE/dist"

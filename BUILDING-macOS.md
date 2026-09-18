@@ -196,6 +196,64 @@ Run it any time with:
 Beef/IDE/dist/BeefBuild -workspace=tests/socket_ipv6 -config=Debug -platform=macOS -run
 ```
 
+## Building libraries
+
+Beef can build static libraries, and (with patch `0003`) real dynamic libraries on macOS.
+
+Set `BuildKind` on the project, **per config and platform** — it is not inherited from another config:
+
+```toml
+# BeefProj.toml
+[Project]
+Name = "TestLib"
+TargetType = "BeefLib"
+
+[Configs.Debug.macOS]
+BuildKind = "StaticLib"     # or "DynamicLib"
+
+[Configs.Release.macOS]
+BuildKind = "DynamicLib"
+```
+
+```bash
+cd <Beef>/IDE/dist
+./BeefBuild -workspace=<your-lib> -config=Release -platform=macOS
+```
+
+`StaticLib` produces `<Project>.a`; `DynamicLib` produces `<Project>.dylib`. Note Beef does not add a
+`lib` prefix, so a library named `TestLib` is `TestLib.dylib` — `-lTestLib` will not find it. Either link
+by path, or set `TargetName = "libTestLib"`.
+
+Export functions with `[Export]`, and add `[CLink]` if you want a C ABI (without it the symbol is
+C++-mangled):
+
+```beef
+[Export, CLink]
+public static int32 Add(int32 a, int32 b) => a + b;
+```
+
+Verified on macOS 27.0 / arm64 / Xcode 26 — a Release `DynamicLib` build, called from both C and Python:
+
+```
+TestLib.dylib: Mach-O 64-bit dynamically linked shared library arm64
+install name:  @rpath/TestLib.dylib
+dependencies:  @rpath/TestLib.dylib, /usr/lib/libc++.1.dylib, /usr/lib/libSystem.B.dylib
+
+from C:      Add(20, 22) = 42        Scale(1.25, 8) = 10.00
+from Python: Add(20, 22) = 42        Scale(1.25, 8) = 10.0
+```
+
+What patch `0003` fixes: `BuildKind = "DynamicLib"` used to be routed to the static archiver, producing an
+`ar` archive named `.dylib` that nothing could link against. The routing condition tested
+`(DynamicLib && !useLinuxLLVM)`, and `useLinuxLLVM` is Linux-only, so macOS fell into the archive branch.
+macOS now links through the `-shared` path, with `-Wl,-install_name,@rpath/<name>` so the library is
+relocatable (otherwise the install name defaults to the absolute build path and gets baked into
+everything that links it).
+
+Static libraries need the LLVM tools at `<Beef>/IDE/dist/llvm/bin/`, which `setup-beef-macos.sh` creates.
+A macOS source build ships no `llvm/` directory, so without it the archive step fails with
+`'llvm/bin/llvm-ar' ... exited with code 255`.
+
 ## Troubleshooting
 
 These are the failures actually encountered while bringing this up, in order.
