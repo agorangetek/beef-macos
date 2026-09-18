@@ -22,6 +22,29 @@ covered here — see [Not included](#not-included).
 Intel Macs should work too — the patches are architecture-independent — but that combination is
 **untested**.
 
+## How this differs from the official docs
+
+The site's [Building from Source](https://www.beeflang.org/docs/getting-start/building/) page says:
+
+> ### Building on Linux and macOS
+> **Requirements:** CMake 3.15 or newer · LLVM-18 · Git
+> **Build Steps:** Build Beef with bin/build.sh
+
+That page is out of date, and following it literally will not work on a current machine:
+
+| The docs say | Current `master` actually does |
+|---|---|
+| LLVM-18 | `bin/build.sh` hard-requires **LLVM 22.1**. It checks `if [ "$LLVM_MAJOR_VERSION" = "22" ] && [ "$LLVM_MINOR_VERSION" = "1" ]` and otherwise prints `ERROR: LLVM 22.1 was not detected` and exits. The string "18" does not appear in the script at all. |
+| `bin/build.sh` just works | It is upstream's own script and it does work — but on a current Xcode its C++ does not compile until `0001` is applied, and its link step needs the `clang++` handling below. |
+| nothing else to know | Upstream's macOS CI does run `bin/build.sh` successfully, because GitHub's runners have the Command Line Tools installed and carried an older libc++ when these commits were current. On a developer machine with Xcode 26 and no CLT, both problems surface. |
+
+The drift is visible in the release notes: 0.43.2 (2022) was "Upgrade to LLVM 13.0.1", the docs page says
+LLVM-18, and `master` requires 22.1.
+
+The docs are right about scope, though: *"the CLI tools such as BeefBuild are supported on these
+platforms, but the IDE is currently only available for Windows."* That matches what this repository
+covers.
+
 ## Requirements
 
 - **Xcode** (full or Command Line Tools). *Only full Xcode is known-good* — see
